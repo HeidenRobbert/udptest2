@@ -16,16 +16,15 @@ public class UDPHandler {
     private Sender sender;
     private MainActivity mainActivity;
 
-    public UDPHandler(EditText display, Context context, EditText message, MainActivity mainActivity){
+    public UDPHandler(EditText display, Context context, EditText message){
         this.display = display;
         this.context = context;
         this.message = message;
-        this.mainActivity = mainActivity;
         sender = new Sender(context);
     }
 
     public void run(){
-        Thread rt = new Thread(new ReceiverThread(context,display,mainActivity));
+        Thread rt = new Thread(new ReceiverThread(context,display));
         rt.start();
         try {
             System.out.println("Adres 1 = " + sender.getBroadcast(InetAddress.getByName(InetAddress.getLocalHost().getHostAddress())));

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         EditText display = findViewById(R.id.tvLastRecieved);
-        nt = new UDPHandler(display,getApplicationContext(),(EditText)findViewById(R.id.etToSend),this);
+        nt = new UDPHandler(display,getApplicationContext(),(EditText)findViewById(R.id.etToSend));
         nt.run();
 
         final Button button = findViewById(R.id.btnSend);

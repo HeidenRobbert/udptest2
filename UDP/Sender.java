@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
 
@@ -86,7 +87,7 @@ public class Sender {
      * @throws IOException
      */
     public InetAddress getBroadcastAddress() throws IOException {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        /*WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         DhcpInfo dhcp = wifi.getDhcpInfo();
         // handle null somehow
 
@@ -94,7 +95,35 @@ public class Sender {
         byte[] quads = new byte[4];
         for (int k = 0; k < 4; k++)
             quads[k] = (byte) (broadcast >> (k * 8));
-        return InetAddress.getByAddress(quads);
+        return InetAddress.getByAddress(quads);*/
+        InetAddress broadcastAddress = null;
+        try {
+            Enumeration<NetworkInterface> networkInterface = NetworkInterface
+                    .getNetworkInterfaces();
+
+            while (broadcastAddress == null
+                    && networkInterface.hasMoreElements()) {
+                NetworkInterface singleInterface = networkInterface
+                        .nextElement();
+                String interfaceName = singleInterface.getName();
+                if (interfaceName.contains("wlan0")
+                        || interfaceName.contains("eth0")) {
+                    for (InterfaceAddress infaceAddress : singleInterface
+                            .getInterfaceAddresses()) {
+                        broadcastAddress = infaceAddress.getBroadcast();
+                        if (broadcastAddress != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return broadcastAddress;
+
     }
 
     public InetAddress getBroadcast(InetAddress myIpAddress) {
